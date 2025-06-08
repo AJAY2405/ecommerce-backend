@@ -1,0 +1,41 @@
+{
+  "name": "e-commerce",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "server": "nodemon server.js",
+    "client": "npm start --prefix ./client",
+    "dev": "concurrently \"npm run start\" \"npm run client\""
+  },
+  "keywords": [],
+  "author": "AJAY SAHANI",
+  "license": "ISC",
+  "dependencies": {
+    "@stripe/react-stripe-js": "^3.7.0",
+    "@stripe/stripe-js": "^7.3.1",
+    "ant": "^0.0.0",
+    "bcrypt": "^5.1.1",
+    "bootstrap": "^5.3.5",
+    "braintree": "^3.31.0",
+    "braintree-web-drop-in": "^1.44.1",
+    "braintree-web-drop-in-react": "^1.2.1",
+    "colors": "^1.4.0",
+    "concurrently": "^9.1.2",
+    "cors": "^2.8.5",
+    "d": "^1.0.2",
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "express-formidable": "^1.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.13.2",
+    "morgan": "^1.10.0",
+    "razorpay": "^2.9.6",
+    "slugify": "^1.6.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
