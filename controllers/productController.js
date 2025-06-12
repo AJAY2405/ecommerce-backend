@@ -12,10 +12,18 @@ dotenv.config();
 
 export const createProductController = async (req, res) => {
   try {
+
+    // console.log("feilds = ",req.fields);
+    // console.log("files = ",req.files);
+
     const { name, description, price, category, quantity, shipping } =
       req.fields;
     const { photo } = req.files;
     //alidation
+    // console.log(photo,photo.size);
+
+
+
     switch (true) {
       case !name:
         return res.status(500).send({ error: "Name is Required" });
@@ -27,7 +35,7 @@ export const createProductController = async (req, res) => {
         return res.status(500).send({ error: "Category is Required" });
       case !quantity:
         return res.status(500).send({ error: "Quantity is Required" });
-      case photo && photo.size > 1000000:
+      case photo && photo.size > 10000000:
         return res
           .status(500)
           .send({ error: "photo is Required and should be less then 1mb" });
@@ -39,6 +47,9 @@ export const createProductController = async (req, res) => {
       products.photo.contentType = photo.type;
     }
     await products.save();
+
+    console.log("product craeted")
+
     res.status(201).send({
       success: true,
       message: "Product Created Successfully",
@@ -62,7 +73,7 @@ export const getProductController = async (req, res) => {
       .populate("category")
       .select("-photo")
       .limit(12)
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 });    // 1 for ascending, -1 for descending    .sort({ price: 1 });
     res.status(200).send({
       success: true,
       counTotal: products.length,
