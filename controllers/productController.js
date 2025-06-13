@@ -4,25 +4,17 @@ import orderModel from "../models/orderModel.js";
 
 import fs from "fs";
 import slugify from "slugify";
-import dotenv from "dotenv";
-
-dotenv.config();
-
+import { uploadOnCloudinary } from "../config/cloudinary.js";
 
 
 export const createProductController = async (req, res) => {
   try {
+    // console.log("body = ", req.body);
+    // console.log("files = ", req.file);
 
-    // console.log("feilds = ",req.fields);
-    // console.log("files = ",req.files);
-
-    const { name, description, price, category, quantity, shipping } =
-      req.fields;
-    const { photo } = req.files;
-    //alidation
-    // console.log(photo,photo.size);
-
-
+    const { name, description, price, category, quantity, shipping } = req.body;
+    const { file } = req;
+   
 
     switch (true) {
       case !name:
@@ -35,20 +27,26 @@ export const createProductController = async (req, res) => {
         return res.status(500).send({ error: "Category is Required" });
       case !quantity:
         return res.status(500).send({ error: "Quantity is Required" });
-      case photo && photo.size > 10000000:
-        return res
-          .status(500)
-          .send({ error: "photo is Required and should be less then 1mb" });
     }
 
-    const products = new productModel({ ...req.fields, slug: slugify(name) });
-    if (photo) {
-      products.photo.data = fs.readFileSync(photo.path);
-      products.photo.contentType = photo.type;
+    if (!file)
+      return res.status(400).json({ error: "Product photo is required" });
+    if (file.size > 5 * 1024 * 1024)
+      return res.status(400).json({ error: "Photo must be ≤ 2 MB" });
+
+    const uploadRes = await uploadOnCloudinary(file.buffer, "products");
+
+    // console.log("uploadRes = ",uploadRes)
+
+    const products = new productModel({ ...req.body, slug: slugify(name) });
+    // the change for the update the image 
+
+    if(file && uploadRes.public_id) {
+      products.imageUrl=uploadRes.url
     }
     await products.save();
 
-    console.log("product craeted")
+    console.log("product craeted");
 
     res.status(201).send({
       success: true,
@@ -73,7 +71,7 @@ export const getProductController = async (req, res) => {
       .populate("category")
       .select("-photo")
       .limit(12)
-      .sort({ createdAt: -1 });    // 1 for ascending, -1 for descending    .sort({ price: 1 });
+      .sort({ createdAt: -1 }); // 1 for ascending, -1 for descending    .sort({ price: 1 });
     res.status(200).send({
       success: true,
       counTotal: products.length,

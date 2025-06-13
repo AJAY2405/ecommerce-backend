@@ -1,7 +1,6 @@
 import express from 'express';
 //rest object   "type": "module",
 import colors from 'colors';
-import dotenv from 'dotenv';
 import morgan from 'morgan';
 import connectDB from './config/db.js';
 import authRoute from './routes/authRoute.js';
@@ -10,8 +9,9 @@ import categoryRoutes from './routes/categoryRoutes.js'
 import productRoutes from './routes/productRoutes.js'
 import path from 'path';    
 
-
+import dotenv from "dotenv";
 dotenv.config();
+
 //database config           npm run server
 connectDB();
 const app=express()

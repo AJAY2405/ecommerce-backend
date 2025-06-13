@@ -18,6 +18,7 @@ import {
 import { isAdmin, requireSignIn } from "../middlewares/authMiddleware.js";
 import formidable from "express-formidable";
 import { capturePayment, verifySignature } from "../controllers/paymentController.js";
+import { singleUpload } from "../middlewares/Multer.js";
 
 const router = express.Router();
 
@@ -26,7 +27,8 @@ router.post(
   "/create-product",
   requireSignIn,
   isAdmin,
-  formidable(),
+  // formidable(),
+  singleUpload,
   createProductController
 );
 //routes
